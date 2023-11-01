@@ -30,6 +30,24 @@ const renderHompage = function(req, res, responseBody){
   });
 };
 
+const requestOptions = {
+  url : 'http://yourapi.com/api/path',
+  method : 'GET',
+  json : {},
+  qs : {
+    offset : 20
+  }
+};
+request(requestOptions, (err, response, body) => {
+  if(err) {
+    console.log(err);
+  } else if (response.statusCode === 200) {
+    console.log(body);
+  } else {
+    console.log(response.statusCode);
+  }
+});
+
 
 const homelist = (req, res) => {
   const path = '/api/locations';
