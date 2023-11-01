@@ -5,6 +5,10 @@ const apiOptions = {
   server: 'http://localhost:3000'
 };
 
+if(process.env.NODE_ENV === 'production'){
+  apiOptions.server = 'https://loc8r-api-i88z.onrender.com';
+}
+
 const renderHompage = function(req, res, responseBody){
   let message = null;
   if(!(responseBody instanceof Array)){
