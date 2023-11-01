@@ -53,7 +53,7 @@ const homelist = (req, res) => {
           return item;
         });
       };  
-      renderHompage(req, res, body);
+      renderHompage(req, res, data);
     
   });
 };
