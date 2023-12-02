@@ -58,4 +58,5 @@ const locationSchema = new mongoose.Schema({
 
 locationSchema.index({coords: '2dsphere'});
 
+mongoose.Schema.Types.String.checkRequired((v) => v != null);
 mongoose.model('Location', locationSchema);

@@ -1,26 +1,49 @@
 const mongoose = require('mongoose');
 const Loc = mongoose.model('Location');
+const User = mongoose.model('User');
+
+const getAuthor = (req, res, callback) => {
+  if(req.auth && req.auth.email){
+    User
+        .findOne({email: req.auth.email})
+        .exec((err, user) => {
+          if(!user){
+            return res.status(404).json({"message": "User not found"});
+          } else if(err){
+            console.log(err);
+            return res.status(404).json(err);
+          }
+          callback(req, res, user.name);
+        });
+  } else {
+    return res.status(404).json({"message": "User not found"});
+  }
+}
 
 const reviewsCreate = (req, res) => {
-  const locationId = req.params.locationid;
-  if(locationId){
-    Loc
-      .findById(locationId)
-      .select('reviews')
-      .exec((err, location) => {
-        if(err) {
-          res.
-            status(400)
-            .json(err);
-        } else{
-          doAddReview(req, res, location);
-        }
-      });
-  } else{
-    res
-      .status(404)
-      .json({"message" : "Location not found"});
-  }
+  getAuthor
+    (req, res, userName => {
+      const locationId = req.params.locationid;
+      if(locationId){
+        Loc
+          .findById(locationId)
+          .select('reviews')
+          .exec((err, location) => {
+            if(err) {
+              res.
+                status(400)
+                .json(err);
+            } else{
+              doAddReview(req, res, location, userName);
+            }
+          });
+      } else{
+        res
+          .status(404)
+          .json({"message" : "Location not found"});
+      }
+    });
+
 };
 
 const reviewsReadOne = (req, res) => {
@@ -176,7 +199,7 @@ module.exports = {
   reviewsDeleteOne
 };
 
-const doAddReview = (req, res, location) => {
+const doAddReview = (req, res, location, author) => {
   if(!location) {
     res
       .status(404)
